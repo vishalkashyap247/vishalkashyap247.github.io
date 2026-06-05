@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Vishal Kashyap - iOS Engineer</title>
+<style>
+  :root {
+    --bg: #000;
+    --bg2: #0a0a0a;
+    --card: #111;
+    --border: rgba(255,255,255,0.08);
+    --accent: #00D084;
+    --accent2: #0070C9;
+    --text: #f5f5f7;
+    --muted: #86868b;
+    --subtle: #1d1d1f;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(0,0,0,0.72);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 0.5px solid rgba(255,255,255,0.1);
+    padding: 0 48px;
+    height: 52px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo { font-size: 17px; font-weight: 500; color: var(--text); letter-spacing: -0.3px; }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a { font-size: 13px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--text); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 100px 24px 80px;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,208,132,0.07) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 40% at 80% 20%, rgba(0,112,201,0.05) 0%, transparent 60%);
+  }
+  .hero-eyebrow {
+    font-size: 13px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 20px;
+    opacity: 0; transform: translateY(20px);
+    animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s forwards;
+  }
+  .hero-title {
+    font-size: clamp(48px, 8vw, 96px); font-weight: 700; line-height: 1.05;
+    letter-spacing: -0.04em; color: var(--text);
+    opacity: 0; transform: translateY(30px);
+    animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.35s forwards;
+  }
+  .hero-title span {
+    background: linear-gradient(135deg, #00D084 0%, #0070C9 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .hero-sub {
+    font-size: clamp(17px, 2.5vw, 21px); color: var(--muted); margin-top: 20px; max-width: 560px;
+    line-height: 1.5; font-weight: 400;
+    opacity: 0; transform: translateY(20px);
+    animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.5s forwards;
+  }
+  .hero-cta {
+    display: flex; gap: 14px; margin-top: 40px; flex-wrap: wrap; justify-content: center;
+    opacity: 0; transform: translateY(20px);
+    animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.65s forwards;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 13px 26px; border-radius: 980px; font-size: 15px; font-weight: 500;
+    cursor: pointer; text-decoration: none; transition: all 0.2s ease;
+    border: none;
+  }
+  .btn-primary { background: var(--accent); color: #000; }
+  .btn-primary:hover { background: #00e892; transform: scale(1.02); }
+  .btn-secondary { background: rgba(255,255,255,0.08); color: var(--text); border: 0.5px solid var(--border); }
+  .btn-secondary:hover { background: rgba(255,255,255,0.13); transform: scale(1.02); }
+  .scroll-hint {
+    position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    opacity: 0; animation: fadeUp 1s ease 1.2s forwards;
+  }
+  .scroll-hint span { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+  .scroll-arrow { width: 1px; height: 40px; background: linear-gradient(to bottom, var(--muted), transparent); animation: scrollPulse 2s ease infinite; }
+  @keyframes scrollPulse { 0%,100%{opacity:0.3;transform:scaleY(1)} 50%{opacity:1;transform:scaleY(1.2)} }
+
+  /* SECTIONS */
+  section { padding: 120px 24px; max-width: 980px; margin: 0 auto; }
+  .section-label {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 16px;
+  }
+  .section-title {
+    font-size: clamp(32px, 5vw, 52px); font-weight: 700; letter-spacing: -0.03em;
+    line-height: 1.08; color: var(--text); margin-bottom: 20px;
+  }
+  .section-body { font-size: 19px; color: var(--muted); line-height: 1.6; max-width: 600px; }
+
+  /* SCROLL ANIMATION */
+  .reveal {
+    opacity: 0; transform: translateY(48px);
+    transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+  .reveal-delay-5 { transition-delay: 0.5s; }
+
+  /* ABOUT */
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 56px; }
+  .about-card {
+    background: var(--card); border: 0.5px solid var(--border); border-radius: 20px; padding: 32px;
+  }
+  .about-card h3 { font-size: 19px; font-weight: 600; margin-bottom: 12px; letter-spacing: -0.02em; }
+  .about-card p { font-size: 15px; color: var(--muted); line-height: 1.65; }
+  .about-card .highlight { color: var(--accent); font-weight: 500; }
+  .curr-list { list-style: none; margin-top: 14px; }
+  .curr-list li { font-size: 15px; color: var(--muted); padding: 8px 0; border-bottom: 0.5px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  .curr-list li:last-child { border-bottom: none; }
+  .curr-list li::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+  /* STACK */
+  #stack { border-top: 0.5px solid var(--border); }
+  .stack-groups { margin-top: 56px; display: flex; flex-direction: column; gap: 48px; }
+  .stack-group h4 { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 18px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip {
+    display: flex; align-items: center; gap: 9px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 11px 20px; font-size: 15px; font-weight: 500; color: rgba(255,255,255,0.85);
+    transition: background 0.25s, border-color 0.25s, transform 0.25s, color 0.25s;
+    cursor: default;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .chip:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.22);
+    color: #fff;
+    transform: translateY(-3px);
+  }
+  .chip-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  /* EXPERIENCE */
+  #experience { border-top: 0.5px solid var(--border); }
+  .exp-list { margin-top: 56px; display: flex; flex-direction: column; gap: 2px; }
+  .exp-card {
+    background: transparent;
+    border: 0.5px solid var(--border);
+    border-radius: 20px;
+    padding: 36px 40px;
+    transition: background 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .exp-card::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    opacity: 0; transition: opacity 0.3s;
+    border-radius: 3px 0 0 3px;
+  }
+  .exp-card:hover { background: rgba(255,255,255,0.03); }
+  .exp-card:hover::before { opacity: 1; }
+  .exp-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; margin-bottom: 6px; flex-wrap: wrap; }
+  .exp-company-wrap { display: flex; align-items: center; gap: 14px; }
+  .exp-logo {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: #fff; object-fit: contain; padding: 4px;
+    border: 0.5px solid rgba(255,255,255,0.1); flex-shrink: 0;
+  }
+  .exp-logo-fallback {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: rgba(255,255,255,0.08); border: 0.5px solid rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; color: var(--text); flex-shrink: 0;
+  }
+  .exp-company { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: var(--text); }
+  .exp-period {
+    font-size: 12px; font-weight: 500; color: var(--accent);
+    background: rgba(0,208,132,0.1); border: 0.5px solid rgba(0,208,132,0.2);
+    border-radius: 20px; padding: 4px 12px; white-space: nowrap; margin-top: 4px;
+  }
+  .exp-role { font-size: 15px; color: var(--muted); margin-bottom: 4px; }
+  .exp-location { font-size: 13px; color: #3a3a3c; margin-bottom: 20px; }
+  .exp-stack { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 22px; }
+  .exp-tag {
+    font-size: 12px; background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6);
+    border: 0.5px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 3px 10px;
+  }
+  .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .exp-bullets li {
+    font-size: 14px; color: var(--muted); line-height: 1.65;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .exp-bullets li::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: rgba(0,208,132,0.5); flex-shrink: 0; margin-top: 8px;
+  }
+  .exp-bullets li strong { color: rgba(255,255,255,0.8); font-weight: 500; }
+
+  /* PROJECT */
+  #projects { border-top: 0.5px solid var(--border); }
+  .project-showcase {
+    margin-top: 56px; background: var(--card); border: 0.5px solid var(--border);
+    border-radius: 28px; overflow: hidden; position: relative;
+  }
+  .project-header-bar {
+    padding: 48px 48px 40px;
+    background: linear-gradient(135deg, rgba(0,208,132,0.08) 0%, rgba(0,112,201,0.06) 100%);
+    border-bottom: 0.5px solid var(--border);
+  }
+  .project-eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+  .project-name { font-size: 40px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 14px; }
+  .project-desc { font-size: 17px; color: var(--muted); line-height: 1.6; max-width: 560px; }
+  .project-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+  .ptag { font-size: 13px; background: rgba(0,208,132,0.1); color: var(--accent); border: 0.5px solid rgba(0,208,132,0.2); border-radius: 20px; padding: 4px 12px; font-weight: 500; }
+  .project-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    border-top: 0.5px solid var(--border);
+  }
+  .pstat {
+    padding: 32px 40px; border-right: 0.5px solid var(--border);
+    transition: background 0.2s;
+  }
+  .pstat:last-child { border-right: none; }
+  .pstat:hover { background: rgba(255,255,255,0.03); }
+  .pstat-num { font-size: 32px; font-weight: 700; letter-spacing: -0.03em; color: var(--accent); }
+  .pstat-label { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .project-link {
+    display: block; padding: 22px 40px; font-size: 15px; color: var(--accent); text-decoration: none;
+    border-top: 0.5px solid var(--border); display: flex; align-items: center; gap: 8px;
+    transition: background 0.2s;
+  }
+  .project-link:hover { background: rgba(0,208,132,0.05); }
+  .project-link::after { content: '→'; transition: transform 0.2s; }
+  .project-link:hover::after { transform: translateX(4px); }
+
+  /* FOOTER */
+  footer {
+    border-top: 0.5px solid var(--border);
+    padding: 60px 48px 40px; text-align: center;
+    max-width: 100%;
+  }
+  .footer-name { font-size: 32px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 8px; }
+  .footer-role { font-size: 15px; color: var(--muted); margin-bottom: 32px; }
+  .footer-links { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 48px; }
+  .footer-links a { font-size: 15px; color: var(--accent); text-decoration: none; transition: opacity 0.2s; }
+  .footer-links a:hover { opacity: 0.7; }
+  .footer-copy { font-size: 13px; color: #3a3a3c; }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse2 { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.75)} }
+
+  /* EDUCATION */
+  #education { border-top: 0.5px solid var(--border); }
+  .edu-card {
+    background: var(--card); border: 0.5px solid var(--border); border-radius: 20px;
+    padding: 36px 40px; margin-top: 56px;
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 24px;
+    flex-wrap: wrap;
+    transition: background 0.3s;
+  }
+  .edu-card:hover { background: rgba(255,255,255,0.03); }
+  .edu-left { flex: 1; min-width: 200px; }
+  .edu-uni { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: var(--text); margin-bottom: 6px; }
+  .edu-degree { font-size: 15px; color: var(--muted); margin-bottom: 4px; }
+  .edu-location { font-size: 13px; color: #3a3a3c; }
+  .edu-right { text-align: right; }
+  .edu-cgpa { font-size: 36px; font-weight: 700; letter-spacing: -0.03em; color: var(--accent); line-height: 1; }
+  .edu-cgpa-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .edu-period { font-size: 12px; font-weight: 500; color: var(--accent); background: rgba(0,208,132,0.1); border: 0.5px solid rgba(0,208,132,0.2); border-radius: 20px; padding: 4px 12px; display: inline-block; margin-top: 10px; }
+
+  /* CONTACT */
+  #contact { border-top: 0.5px solid var(--border); text-align: center; }
+  .contact-inner { margin-top: 56px; }
+  .contact-title { font-size: clamp(32px, 5vw, 52px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.08; margin-bottom: 16px; }
+  .contact-sub { font-size: 18px; color: var(--muted); line-height: 1.6; max-width: 480px; margin: 0 auto 40px; }
+  .contact-links { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+
+  @media (max-width: 680px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .about-grid { grid-template-columns: 1fr; }
+    .project-stats { grid-template-columns: 1fr; }
+    .pstat { border-right: none; border-bottom: 0.5px solid var(--border); }
+    .project-header-bar { padding: 32px 28px; }
+    .project-name { font-size: 28px; }
+    .edu-card { flex-direction: column; }
+    .edu-right { text-align: left; }
+    .exp-header { flex-direction: column; gap: 8px; }
+    section { padding: 80px 20px; }
+    .exp-card { padding: 24px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">VK</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#stack">Stack</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="https://linkedin.com/in/vishal-kashyap-447a451ba" target="_blank" style="color:#0a66c2;">LinkedIn</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-eyebrow">iOS Engineer · Meesho · Bangalore</div>
+  <h1 class="hero-title">Building iOS<br>that feels <span>alive.</span></h1>
+  <p class="hero-sub">Swift, SwiftUI, and Apple frameworks - crafting native experiences used by millions across India.</p>
+  <div class="hero-cta">
+    <a href="#experience" class="btn btn-primary">See my experience</a>
+    <a href="https://linkedin.com/in/vishal-kashyap-447a451ba" target="_blank" class="btn btn-secondary" style="border-color:rgba(10,102,194,0.4); color:#58a6ff;">LinkedIn →</a>
+    <a href="https://github.com/vishalkashyap247" target="_blank" class="btn btn-secondary">GitHub →</a>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="reveal"><div class="section-label">About</div></div>
+  <div class="reveal reveal-delay-1"><h2 class="section-title">Engineer at heart,<br>iOS by choice.</h2></div>
+  <div class="reveal reveal-delay-2"><p class="section-body">I build products at Meesho that reach millions of people. My focus is the iOS platform - native feel, clean architecture, and details that make a difference.</p></div>
+
+  <div class="about-grid">
+    <div class="about-card reveal reveal-delay-1">
+      <h3>Background</h3>
+      <p>Software engineer at <span class="highlight">Meesho</span>, one of India's largest e-commerce platforms. I work on mobile experiences that serve hundreds of millions of users across the country.<br><br>I care about the craft - smooth animations, thoughtful architecture, and UIs that feel right.</p>
+    </div>
+    <div class="about-card reveal reveal-delay-2">
+      <h3>Currently</h3>
+      <ul class="curr-list">
+        <li>iOS Engineering @ Meesho, Bangalore</li>
+        <li>Exploring iOS 26 - ActivityKit, WidgetKit</li>
+        <li>Swift 6 strict concurrency & @Observable</li>
+        <li>Building TheYorker as a side project</li>
+        <li>Open to iOS collaboration</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- STACK -->
+<section id="stack">
+  <div class="reveal"><div class="section-label">Stack</div></div>
+  <div class="reveal reveal-delay-1"><h2 class="section-title">Tools I reach for.</h2></div>
+
+  <div class="stack-groups">
+    <div class="reveal reveal-delay-1">
+      <div class="stack-group">
+        <h4>Mobile</h4>
+        <div class="chips">
+          <div class="chip"><div class="chip-dot" style="background:#F05138"></div>Swift</div>
+          <div class="chip"><div class="chip-dot" style="background:#0070C9"></div>SwiftUI</div>
+          <div class="chip"><div class="chip-dot" style="background:#555"></div>UIKit</div>
+          <div class="chip"><div class="chip-dot" style="background:#1575F9"></div>ActivityKit</div>
+          <div class="chip"><div class="chip-dot" style="background:#1575F9"></div>WidgetKit</div>
+          <div class="chip"><div class="chip-dot" style="background:#A2AAAD"></div>Xcode</div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal reveal-delay-2">
+      <div class="stack-group">
+        <h4>Backend</h4>
+        <div class="chips">
+          <div class="chip"><div class="chip-dot" style="background:#ED8B00"></div>Java</div>
+          <div class="chip"><div class="chip-dot" style="background:#ED8B00"></div>Spring Boot</div>
+          <div class="chip"><div class="chip-dot" style="background:#00ADD8"></div>Go</div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal reveal-delay-3">
+      <div class="stack-group">
+        <h4>Data & Infra</h4>
+        <div class="chips">
+          <div class="chip"><div class="chip-dot" style="background:#4479A1"></div>MySQL</div>
+          <div class="chip"><div class="chip-dot" style="background:#4DB33D"></div>MongoDB</div>
+          <div class="chip"><div class="chip-dot" style="background:#DC382D"></div>Redis</div>
+          <div class="chip"><div class="chip-dot" style="background:#231F20"></div>Kafka</div>
+          <div class="chip"><div class="chip-dot" style="background:#2496ED"></div>Docker</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="reveal"><div class="section-label">Experience</div></div>
+  <div class="reveal reveal-delay-1"><h2 class="section-title">Where I've worked.</h2></div>
+
+  <div class="exp-list">
+
+    <!-- Meesho -->
+    <div class="exp-card reveal reveal-delay-1">
+      <div class="exp-header">
+        <div class="exp-company-wrap">
+          <img class="exp-logo" src="https://companieslogo.com/img/orig/meesho-47219424.png?t=1720244494" alt="Meesho" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+          <div class="exp-logo-fallback" style="display:none">M</div>
+          <div class="exp-company">Meesho</div>
+        </div>
+        <div class="exp-period">Oct 2025 - Present</div>
+      </div>
+      <div class="exp-role">Software Development Engineer 1 · iOS Developer</div>
+      <div class="exp-location">Bangalore, India</div>
+      <div class="exp-stack">
+        <span class="exp-tag">Swift</span>
+        <span class="exp-tag">SwiftUI</span>
+        <span class="exp-tag">UIKit</span>
+        <span class="exp-tag">XCTest</span>
+        <span class="exp-tag">Instruments</span>
+        <span class="exp-tag">MVVM</span>
+      </div>
+      <ul class="exp-bullets">
+        <li><span>Led end-to-end redesign of the app configuration system with a scalable namespace-based architecture and Dependency Injection, improving reliability across <strong>150M+ users</strong>.</span></li>
+        <li><span>Contributed to integrating an on-device <strong>YOLOX Core ML</strong> object detection model for visual search - real-time product detection from camera and gallery, fully on-device with no server dependency.</span></li>
+        <li><span>Diagnosed and resolved a high-severity push notification visibility issue impacting <strong>200K+ users</strong> under leadership scrutiny, shipped fix with zero regression.</span></li>
+        <li><span>Reduced app launch time from <strong>1000ms to 900ms</strong> by profiling the startup sequence via Xcode Instruments and removing expensive synchronous operations.</span></li>
+      </ul>
+    </div>
+
+    <!-- MoveInSync -->
+    <div class="exp-card reveal reveal-delay-2">
+      <div class="exp-header">
+        <div class="exp-company-wrap">
+          <img class="exp-logo" src="https://moveinsync.com/wp-content/uploads/2023/01/cropped-header-logo-270x270.png" alt="MoveInSync" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+          <div class="exp-logo-fallback" style="display:none">M</div>
+          <div class="exp-company">MoveInSync</div>
+        </div>
+        <div class="exp-period">Dec 2024 - Oct 2025</div>
+      </div>
+      <div class="exp-role">Software Development Engineer 1 · iOS Developer</div>
+      <div class="exp-location">Bangalore, India</div>
+      <div class="exp-stack">
+        <span class="exp-tag">Swift</span>
+        <span class="exp-tag">UIKit</span>
+        <span class="exp-tag">SwiftUI</span>
+        <span class="exp-tag">KMP</span>
+      </div>
+      <ul class="exp-bullets">
+        <li><span>Led end-to-end development of <strong>MIS 2.0</strong>, the main landing screen of the app serving <strong>500K+ enterprise users</strong> across Fortune 500 companies - fully redesigned UIKit/SwiftUI experience under tight deadlines.</span></li>
+        <li><span>Integrated <strong>Kotlin Multiplatform (KMP)</strong> to share core business logic across iOS and Android, reducing platform-specific duplication and improving consistency.</span></li>
+        <li><span>Improved app performance through lazy loading, background task scheduling, and in-memory caching, reducing load time by <strong>18%</strong> on older devices.</span></li>
+      </ul>
+    </div>
+
+    <!-- Xperi -->
+    <div class="exp-card reveal reveal-delay-3">
+      <div class="exp-header">
+        <div class="exp-company-wrap">
+          <img class="exp-logo" src="https://companieslogo.com/img/orig/XPER-cf520cd1.png?t=1720244494" alt="Xperi" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+          <div class="exp-logo-fallback" style="display:none">X</div>
+          <div class="exp-company">Xperi Inc.</div>
+        </div>
+        <div class="exp-period">Aug 2023 - Dec 2024</div>
+      </div>
+      <div class="exp-role">Software Engineer · iOS + React</div>
+      <div class="exp-location">Bangalore, India</div>
+      <div class="exp-stack">
+        <span class="exp-tag">Swift</span>
+        <span class="exp-tag">UIKit</span>
+        <span class="exp-tag">SwiftUI</span>
+        <span class="exp-tag">React</span>
+        <span class="exp-tag">Redux</span>
+        <span class="exp-tag">TypeScript</span>
+      </div>
+      <ul class="exp-bullets">
+        <li><span>Shipped <strong>3 major features</strong> end-to-end for a production iOS app with a 99.9% release success rate using Swift, UIKit, and MVVM architecture.</span></li>
+        <li><span>Migrated legacy UIKit screens to SwiftUI, improving maintainability and reducing load time by <strong>22%</strong>.</span></li>
+        <li><span>Contributed to the <strong>Parental Control</strong> feature across iOS and web using React and Redux, gaining full cross-platform development experience.</span></li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="reveal"><div class="section-label">Projects</div></div>
+  <div class="reveal reveal-delay-1"><h2 class="section-title">Things I've built.</h2></div>
+
+  <div class="project-showcase reveal reveal-delay-2">
+    <div class="project-header-bar">
+      <div class="project-eyebrow">Featured project · 2026</div>
+      <div class="project-name">TheYorker</div>
+      <p class="project-desc">A dark-mode iOS cricket companion app. Live scores, match schedules, Dynamic Island Live Activities, and home screen widgets. Built entirely with Apple-native frameworks - no third-party dependencies.</p>
+      <div class="project-tags">
+        <span class="ptag">SwiftUI</span>
+        <span class="ptag">ActivityKit</span>
+        <span class="ptag">WidgetKit</span>
+        <span class="ptag">Swift 6</span>
+        <span class="ptag">Dynamic Island</span>
+        <span class="ptag">@Observable</span>
+        <span class="ptag">iOS 26</span>
+      </div>
+    </div>
+    <div class="project-stats">
+      <div class="pstat">
+        <div class="pstat-num">0</div>
+        <div class="pstat-label">Third-party dependencies</div>
+      </div>
+      <div class="pstat">
+        <div class="pstat-num">125</div>
+        <div class="pstat-label">Unit test methods</div>
+      </div>
+      <div class="pstat">
+        <div class="pstat-num">iOS 26</div>
+        <div class="pstat-label">Minimum deployment target</div>
+      </div>
+    </div>
+    <a href="https://github.com/vishalkashyap247/TheYorker" target="_blank" class="project-link">View on GitHub</a>
+  </div>
+
+  <!-- InkSpotBlogs -->
+  <div class="project-showcase reveal reveal-delay-3" style="margin-top: 16px;">
+    <div class="project-header-bar" style="background: linear-gradient(135deg, rgba(0,112,201,0.08) 0%, rgba(99,102,241,0.06) 100%);">
+      <div class="project-eyebrow" style="color: #58a6ff;">Full-stack web · 2023 - Present</div>
+      <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+        <div class="project-name" style="margin:0;">InkSpotBlogs</div>
+        <a href="https://inkspotblog.netlify.app/" target="_blank" style="display:inline-flex; align-items:center; gap:6px; font-size:12px; color:#58a6ff; background:rgba(0,112,201,0.1); border:0.5px solid rgba(0,112,201,0.25); border-radius:20px; padding:4px 12px; text-decoration:none; font-weight:500; transition:background 0.2s;">
+          <span style="width:6px;height:6px;border-radius:50%;background:#34d399;display:inline-block;animation:pulse2 1.5s infinite;"></span>
+          inkspotblog.netlify.app
+        </a>
+      </div>
+      <p class="project-desc" style="margin-top:14px;">A full-stack blogging platform with dynamic content, authentication, and a scalable backend. Built end-to-end from database design to deployed frontend.</p>
+      <div class="project-tags">
+        <span class="ptag" style="background: rgba(0,112,201,0.1); color: #58a6ff; border-color: rgba(0,112,201,0.2);">ReactJS</span>
+        <span class="ptag" style="background: rgba(0,112,201,0.1); color: #58a6ff; border-color: rgba(0,112,201,0.2);">Node.js</span>
+        <span class="ptag" style="background: rgba(0,112,201,0.1); color: #58a6ff; border-color: rgba(0,112,201,0.2);">Express</span>
+        <span class="ptag" style="background: rgba(0,112,201,0.1); color: #58a6ff; border-color: rgba(0,112,201,0.2);">MongoDB</span>
+        <span class="ptag" style="background: rgba(0,112,201,0.1); color: #58a6ff; border-color: rgba(0,112,201,0.2);">JWT</span>
+      </div>
+    </div>
+    <div class="project-stats">
+      <div class="pstat">
+        <div class="pstat-num" style="color: #58a6ff;">Google</div>
+        <div class="pstat-label">Sign-In + OTP auth</div>
+      </div>
+      <div class="pstat">
+        <div class="pstat-num" style="color: #58a6ff;">Full</div>
+        <div class="pstat-label">Stack - frontend to DB</div>
+      </div>
+      <div class="pstat">
+        <div class="pstat-num" style="color: #58a6ff;">Live</div>
+        <div class="pstat-label">Deployed on Netlify</div>
+      </div>
+    </div>
+    <a href="https://inkspotblog.netlify.app/" target="_blank" class="project-link" style="color: #58a6ff;">Visit site</a>
+  </div>
+
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="reveal"><div class="section-label">Education</div></div>
+  <div class="reveal reveal-delay-1"><h2 class="section-title">Where I studied.</h2></div>
+  <div class="edu-card reveal reveal-delay-2">
+    <div class="edu-left">
+      <div class="edu-uni">Lovely Professional University</div>
+      <div class="edu-degree">B.Tech · Computer Science and Engineering</div>
+      <div class="edu-location">Punjab, India</div>
+      <div class="edu-period">2020 - 2024</div>
+    </div>
+    <div class="edu-right">
+      <div class="edu-cgpa">8.31</div>
+      <div class="edu-cgpa-label">CGPA</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="reveal"><div class="section-label">Contact</div></div>
+  <div class="contact-inner">
+    <div class="contact-title reveal reveal-delay-1">Let's connect.</div>
+    <p class="contact-sub reveal reveal-delay-2">Open to iOS roles, side projects, and conversations. Best reached on LinkedIn or email.</p>
+    <div class="contact-links reveal reveal-delay-3">
+      <a href="https://linkedin.com/in/vishal-kashyap-447a451ba" target="_blank" class="btn btn-primary">LinkedIn →</a>
+      <a href="mailto:kashyapvishal225@gmail.com" class="btn btn-secondary">Email me</a>
+      <a href="https://github.com/vishalkashyap247" target="_blank" class="btn btn-secondary">GitHub</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-name reveal">Vishal Kashyap</div>
+  <div class="footer-role reveal reveal-delay-1">iOS Engineer · Meesho · Bangalore, India</div>
+  <div class="footer-links reveal reveal-delay-2">
+    <a href="https://linkedin.com/in/vishal-kashyap-447a451ba" target="_blank" style="color:#58a6ff;">LinkedIn</a>
+    <a href="https://github.com/vishalkashyap247" target="_blank">GitHub</a>
+    <a href="mailto:kashyapvishal225@gmail.com">Email</a>
+  </div>
+  <div class="footer-copy reveal reveal-delay-3">© 2026 Vishal Kashyap</div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
